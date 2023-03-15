@@ -30,7 +30,7 @@
 //     const ipAddress = await Network.getIpAddressAsync();
 //     return ipAddress;
 //   }
-const host = '192.168.1.14' 
+const host = '192.168.1.8' 
 const api={
     URL: `http://${host}:8000`,
     baseURL:`http://${host}:8000/api`,

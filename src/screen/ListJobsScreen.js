@@ -11,16 +11,11 @@ const ListJobsScreen = ({ route }) => {
         <ScrollView onScroll={(event) => {
             const offsetY = event.nativeEvent.contentOffset.y;
             const contentHeight = event.nativeEvent.contentSize.height;
-            // console.log(contentHeight)
-            
             const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
-            // console.log(offsetY + scrollViewHeight)
             if (Math.round(offsetY + scrollViewHeight) >= Math.round(contentHeight)) {
                 if(next_page_url !== null){
                     setLoadPage(true);
                     axios.get(next_page_url).then(res => {
-                    //  const temp = jobs.concat(res.data)
-                    //  console.log(temp)
                         setJob(jobs.concat(res.data.data))
                         setURL(res.data.next_page_url)
                         setLoadPage(false)

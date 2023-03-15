@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import { Job } from './HomeScreen'
+import PlaceholderCard from './PPlaceholderLoadingCard'
 import React, { useState, useEffect } from 'react'
 import api from '../services/ApiService'
 import axios from 'axios'
@@ -43,7 +44,13 @@ const ListJobsSearchScreen = ({query}) => {
   }}
   >
       <View style={{ alignItems: 'center', marginVertical: 15 }}>
-          {jobs.map((job, i) => <Job job={job} key={i}></Job>)}
+          {jobs.length > 0 ? (jobs.map((job, i) => <Job job={job} key={i}></Job>))
+          :(<>
+          <PlaceholderCard/>
+          <PlaceholderCard/>
+          <PlaceholderCard/>
+          <PlaceholderCard/>
+          </>)}
           {load_page && <ActivityIndicator size='small' color={'#FF6F00'} /> }
       </View>
     </ScrollView>

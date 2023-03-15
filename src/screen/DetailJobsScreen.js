@@ -267,7 +267,7 @@ const DetailJobsScreen = ({ route }) => {
                         }}}
                     
                     style={{margin:10,backgroundColor:'#FF6F00',padding:10,borderRadius: 20,alignItems:'center'}}>
-                        <Text style={{color: 'white'}}>ứng tuyển ngay</Text>
+                        <Text style={{color: 'white'}}>ứng tuyển</Text>
                     </TouchableOpacity>
                 </View>
               
