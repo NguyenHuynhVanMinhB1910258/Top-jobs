@@ -5,9 +5,42 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import * as Linking from 'expo-linking';
-
+const Resume =({application,k,focused,handleFocused})=>{
+  const [isfocused,setIF] = useState({})
+  useEffect(()=>{
+    if(k===focused){
+      setIF({backgroundColor:30})
+    }else {
+      setIF({backgroundColor:10})
+    }
+  },[focused])
+  
+  return(
+    <TouchableOpacity onLongPress={() => {
+      if (Linking.canOpenURL(application.resume)) {
+        Linking.openURL(application.resume);
+      }
+    }} 
+    onPress={()=>{handleFocused(k)}} 
+    style={[{ height: 100, padding: 10,marginBottom:5},isfocused]}>
+      <View style={{ flexDirection: 'row' }}>
+        <Text st>Link CV: </Text>
+        <Text numberOfLines={1}>{application.resume}</Text>
+      </View>
+      <View style={{ flexDirection: 'row' }}>
+        <Text>Họ và tên: </Text>
+        <Text>{application.full_name}</Text>
+      </View>
+      <View style={{ flexDirection: 'row' }}>
+        <Text>email: </Text>
+        <Text>{application.email}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+}
 const ApplicationForm = ({route}) => {
   const navigation = useNavigation();
+  const [focused,setFocused] = useState(0);
   const [applications,setApplications] = useState([]);
   const [job_id] = useState(route.params)
   const [errors,setErrors]= useState({})
@@ -18,32 +51,30 @@ const ApplicationForm = ({route}) => {
   const [token, setToken] = useState('');
   useState(async () => {
       setToken(await AsyncStorage.getItem('token'))
-      loadApplyHistory();
+      // loadApplyHistory();
   })
+  const handleFocused=(key)=>{
+    setFocused(key);
+    setResume(applications[key].resume)
+    setFullName(applications[key].full_name)
+    setEmail(applications[key].email)
+  }
   // console.log(applications)
-  const loadApplyHistory = async () => {
-    try {
-        const history = await AsyncStorage.getItem('ApplyHistory');
-        if (history !== null) {
-          setApplications(JSON.parse(history));
+  useEffect(()=>{
+    if(token !== ''){
+      axios.get(`${api.baseURL}/user/application`,{
+        headers:{
+          authorization: `Bearer ${token}`
         }
-    } catch (error) {
-        console.log(error);
+      }).then(
+        res=>{
+          setApplications(res.data)
+        }).catch(
+          e=>console.log(e)
+      )
     }
-  };
-  const handleSavepAllicattion = async (obj) =>{
-   
-    try {
-      // Check if the search keyword already exists in the history
-      if (!applications.includes(obj)) {
-          const history = [obj,...applications]
-          await AsyncStorage.setItem('ApplyHistory', JSON.stringify(history));
-          setApplications(history);
-      }
-  } catch (error) {
-      console.log(error);
-  }
-  }
+  },[token])
+ 
   const handleSubmit = () => {
     // Gửi đơn ứng tuyển
     console.log({resume, email, description,full_name,job_id});
@@ -53,7 +84,7 @@ const ApplicationForm = ({route}) => {
       }
     })
     .then(res=>{
-      handleSavepAllicattion({resume,email,full_name})
+      // handleSavepAllicattion({resume,email,full_name})
       navigation.goBack();
     }).catch(e => {
       console.log(e)
@@ -66,22 +97,14 @@ const ApplicationForm = ({route}) => {
 
   return (
     <View style={styles.container}>
-      {applications && 
-      <>
+      {applications.length > 0 && 
+      <View height={200}>
       <Text style={styles.label}>Sử dụng CV đã ứng tuyển</Text>
-      <ScrollView style ={{height:600}}>
-        <View style={{height:200, borderWidth: 1}}>
-          <Text onPress={()=>{
-            Linking.openURL(applications[0].resume);
-          }} numberOfLines={1}>{applications[0].resume}</Text>
-          <Text>{applications[0].full_name}</Text>
-          <Text>{applications[0].email}</Text>
-        </View>
-      </ScrollView>
-      </>
+          <ScrollView>
+          {applications.map((application,i)=><Resume application={application} key={i} k={i} focused={focused} handleFocused={handleFocused}></Resume>)}
+          </ScrollView>
+      </View>
       }
-     
-     
       <Text style={styles.label}>Link CV:</Text>
       <TextInput
         style={styles.input}
@@ -117,6 +140,7 @@ const ApplicationForm = ({route}) => {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Gửi</Text>
       </TouchableOpacity>
+      
     </View>
   );
 };

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import LoadingScreen from './src/screen/LoadingScreen';
 import LoginScreen from './src/screen/LoginScreen';
 import HomeScreen from './src/screen/HomeScreen';
+import MyWorkScreen from './src/screen/MyWorkScreen';
 import ApplicationForm from './src/screen/ApplicationFormScreen';
 import ProfileScreen1 from './src/screen/ProfileScreen';
 import ListJobsScreen from './src/screen/ListJobsScreen';
@@ -12,7 +13,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useState,useEffect } from 'react';
+import * as LocalAuthentication from 'expo-local-authentication';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import EntypoIcon from '@expo/vector-icons/MaterialIcons';
+// import { Icon } from '@expo/vector-icons/build/createIconSet';
+// import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
+
 const Tab = createBottomTabNavigator();
 const TabApp = ({navigation,route}) => {
   const [user,setUser] = useState(route.params);
@@ -34,10 +40,10 @@ const TabApp = ({navigation,route}) => {
           <Icon name = {nameicon} color={color} size={size}></Icon>
         );
       }
-      if(route.name === 'Worker'){
-        nameicon = focused ? 'folder-account' : 'folder-account-outline'
+      if(route.name === 'MyWorkScreen'){
+        nameicon = focused ? 'work' : 'work-outline'
         return (
-          <Icon name ={nameicon} color={color} size={size}></Icon>
+          <EntypoIcon name = {nameicon} color={color} size={size} />
         );
       }
       if(route.name === 'Profile'){
@@ -53,8 +59,8 @@ const TabApp = ({navigation,route}) => {
   })} >
     <Tab.Screen name='Home' component={HomeScreen} initialParams={user} options={{tabBarLabel:'Trang chủ'}} />
     {/* <Tab.Screen name='Post' component={PostScreen} initialParams={route.params} options={{tabBarLabel:'Đăng tin'}} />
-    <Tab.Screen name='add' component={JobPostingForm} options={{tabBarButton: ()=><TouchableOpacity onPress={()=>{}}><Text>Add</Text></TouchableOpacity>}}/>
-    <Tab.Screen name='Worker' component={WorkerScreen} options={{tabBarLabel:'Quản lý UV'}}/> */}
+    <Tab.Screen name='add' component={JobPostingForm} options={{tabBarButton: ()=><TouchableOpacity onPress={()=>{}}><Text>Add</Text></TouchableOpacity>}}/> */}
+    <Tab.Screen name='MyWorkScreen' component={MyWorkScreen} options={{tabBarLabel:'Việc làm của tôi'}}/>
     <Tab.Screen name='Profile' component={ProfileScreen1} options={{tabBarLabel:'Cá Nhân'}}/>
   </Tab.Navigator>
   )
